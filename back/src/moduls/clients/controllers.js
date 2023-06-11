@@ -7,9 +7,25 @@ function getAlls () {
     
 };
 
+function One (id) {
+    return db.One(TABLE, id);
+    
+};
+
+function Delete (body) {
+    return db.deleteOne(TABLE, body); 
+};
+
+function addOne (body) {
+    return db.addOne(TABLE, body); 
+};
+
 
 module.exports = {
-    getAlls
+    getAlls,
+    One,
+    Delete,
+    addOne
 };
 
 
