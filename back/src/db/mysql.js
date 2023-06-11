@@ -33,7 +33,7 @@ conexion.on("error", (err) => {
     dbMysql();
   } else {
     throw err;
-  }
+  };
 });
 
 dbMysql();
@@ -42,30 +42,64 @@ dbMysql();
 function Alls(table) {
  return new Promise((resolve, reject) => {
     conexion.query(`SELECT * FROM ${table}`, (error, result) => {
-        if(error) {
-            return reject(error);
-        }
-            resolve(result)
-        })
- })
+        return error ? reject(error) : resolve(result);
+    });
+ });
 };
 
 function One(table, id) {
-
+ return new Promise((resolve, reject) => {
+   conexion.query(`SELECT * FROM ${table} WHERE id = ${id}`, (error, result) => {
+       return error ? reject(error) : resolve(result);
+   });
+ });
 };
+
+function insert(table, data) {
+ return new Promise((resolve, reject) => {
+   conexion.query(
+     `INSERT INTO ${table} SET ?`, data,
+     (error, result) => {
+       return error ? reject(error) : resolve(result);
+     }
+   );
+ }); 
+}; 
+
+function update(table, data) {
+ return new Promise((resolve, reject) => {
+   conexion.query(
+     `UPDATE ${table} SET ? WHERE id = ?`, [data, data.id],
+     (error, result) => {
+       return error ? reject(error) : resolve(result);
+     }
+   );
+ }); 
+}; 
 
 function addOne(table, data) {
-
+ if(data && data.id == 0 || !data.id){
+    return insert(table, data) ;
+ }else {
+    return update(table, data);
+ }
 };
 
-function deleteOne(table, id) {
+function deleteOne(table, data) {
+ return new Promise((resolve, reject) => {
+   conexion.query(
+     `DELETE FROM ${table} WHERE id = ?`, data.id,
+     (error, result) => {
+       return error ? reject(error) : resolve(result);
+     }
+   );
+ }); 
+}; 
 
-};
-
-
+ 
 module.exports = {
     Alls,
     One,
     addOne,
     deleteOne
-}
+} 
